@@ -1,0 +1,33 @@
+1.for creating CERTIFICATE
+
+    openssl req -x509 -nodes -days 3650 \
+    -newkey rsa:4096 \
+    -keyout atls.key \
+    -out atls.crt \
+    -subj "/CN=*.d2-india.com/O=D2 India" \
+    -addext "subjectAltName=DNS:*.d2-india.com,DNS:d2-india.com"
+
+2.For checking validity of CERTIFICATE
+
+    openssl x509 -in ./atls.crt -noout -subject -issuer -dates
+
+3.getting secrets in kubernates
+
+    kubectl get secrets -n ayon
+
+4.Deleting old certificate if exists
+
+    k delete secret ayon2-tls -n ayon
+
+5.Creating new secret 
+
+     kubectl create secret tls ayon2-tls --cert=atls.crt --key=atls.key -n ayon
+    
+6.Deleting yaml file  
+
+    k delete -f ayon-deploy-secure.yaml
+
+7.Applying new yaml file
+
+    k apply -f ayon-deploy-secure.yaml
+
